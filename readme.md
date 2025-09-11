@@ -40,3 +40,27 @@ Track recently viewed movies.
 🌙 User Experience
 
 Dark mode toggle for a sleek, modern look.
+
+
+🚀 Getting Started
+1️⃣ Clone the Repository
+git clone https://github.com/your-username/movie-app.git
+cd movie-app
+
+2️⃣ Install Dependencies
+npm install
+
+3️⃣ Environment Variables
+
+Create a .env.local file in the root and add:
+
+NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key
+NEXT_PUBLIC_CLERK_FRONTEND_API=your_clerk_frontend_api
+CLERK_API_KEY=your_clerk_api_key
+
+4️⃣ Run the Development Server
+npm run dev
+
+
+App will be running on:
+👉 http://localhost:3000
