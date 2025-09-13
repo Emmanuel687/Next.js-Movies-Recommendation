@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const favSchema = new mongoose.Schema({
   movieId: { type: String, required: true },
   title: { type: String, required: true },
@@ -9,7 +8,6 @@ const favSchema = new mongoose.Schema({
   rating: { type: Number, required: true },
   image: { type: String, required: true },
 });
-
 
 const userSchema = new mongoose.Schema({
   clerkId: { type: String, required: true, unique: true },
@@ -21,6 +19,6 @@ const userSchema = new mongoose.Schema({
 },
   { timestamps: true });
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;

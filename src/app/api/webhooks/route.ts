@@ -1,42 +1,34 @@
 import { clerkClient } from '@clerk/nextjs/server'
 import { verifyWebhook } from '@clerk/nextjs/webhooks'
 import { NextRequest } from 'next/server'
+import { createOrUpdateUser, deleteUser } from '@/app/lib/actions/user.actions'
 
-// Add these placeholder functions or import from your database module
-async function createOrUpdateUser(userData: any) {
-  // Implement your database logic here
-  console.log('createOrUpdateUser called with:', userData);
-  // Return a mock user object for now - replace with actual implementation
-  return { _id: 'mock-user-id' };
-}
-
-async function deleteUser(id: string) {
-  // Implement your database logic here
-  console.log('deleteUser called with id:', id);
-}
 
 export async function POST(req: NextRequest) {
   try {
     const evt = await verifyWebhook(req)
 
-    // Do something with payload
-    // For this guide, log payload to console
+    // Extract event data
     const { id } = evt?.data
     const eventType = evt?.type
+
+    console.log(`Received webhook with ID ${id} and event type of ${eventType}`)
 
     let user: any = null; // Declare user variable in proper scope
 
     if (eventType === 'user.created' || eventType === 'user.updated') {
-      const { first_name, last_name, email_addresses, image_url } = evt?.data; // Added missing image_url
+      const { first_name, last_name, email_addresses, image_url } = evt?.data;
 
       try {
-        user = await createOrUpdateUser({ // Fixed: Added parentheses and await
+        // Call the actual database function with the correct parameter structure
+        user = await createOrUpdateUser(
           id,
           first_name,
           last_name,
-          email_addresses,
-          image_url
-        });
+          image_url,
+          email_addresses
+        );
+        console.log('User created/updated successfully:', user);
       } catch (error) {
         console.error('Error creating/updating user:', error);
         return new Response('Error processing user', { status: 400 });
@@ -49,6 +41,7 @@ export async function POST(req: NextRequest) {
         await client.users.updateUserMetadata(id, {
           publicMetadata: { userMongoId: user._id.toString() }
         });
+        console.log('User metadata updated successfully');
       } catch (error) {
         console.error('Error updating user metadata:', error);
       }
@@ -57,7 +50,8 @@ export async function POST(req: NextRequest) {
     if (eventType === 'user.deleted') {
       try {
         await deleteUser(id);
-      } catch (error) { // Fixed: Added missing space and proper block structure
+        console.log('User deleted successfully');
+      } catch (error) {
         console.log('Error deleting user:', error);
         return new Response('Error deleting user', { status: 400 });
       }

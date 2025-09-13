@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 let initialized = false;
 
-
 export const connectToDB = async () => {
   mongoose.set("strictQuery", true);
 
@@ -12,15 +11,12 @@ export const connectToDB = async () => {
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(process.env.MONGODB_URI!, {
       dbName: "next-imdb-clerk",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
     initialized = true;
     console.log("MongoDB connected");
-  }
-  catch (error) {
+  } catch (error) {
     console.error("MongoDB connection error:", error);
   }
-};    
+};
