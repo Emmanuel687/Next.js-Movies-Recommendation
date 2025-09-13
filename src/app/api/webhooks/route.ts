@@ -4,9 +4,44 @@ import { NextRequest } from 'next/server'
 import { createOrUpdateUser, deleteUser } from '@/app/lib/actions/user.actions'
 
 
+
+// Define types for Clerk webhook data
+interface ClerkEmailAddress {
+  email_address: string;
+  id: string;
+  verification: {
+    status: string;
+    strategy: string;
+  };
+}
+
+interface ClerkUserData {
+  id: string;
+  first_name?: string;
+  last_name?: string;
+  email_addresses: ClerkEmailAddress[];
+  image_url?: string;
+  profile_image_url?: string;
+}
+
+interface ClerkWebhookEvent {
+  data: ClerkUserData;
+  type: string;
+  object: string;
+}
+
+interface DatabaseUser {
+  _id: string;
+  clerkId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePicture: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const evt = await verifyWebhook(req)
+    const evt = await verifyWebhook(req) as ClerkWebhookEvent
 
     // Extract event data
     const { id } = evt?.data
@@ -14,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     console.log(`Received webhook with ID ${id} and event type of ${eventType}`)
 
-    let user: any = null; // Declare user variable in proper scope
+    let user: DatabaseUser | null = null; // Properly typed user variable
 
     if (eventType === 'user.created' || eventType === 'user.updated') {
       const { first_name, last_name, email_addresses, image_url } = evt?.data;
@@ -23,9 +58,9 @@ export async function POST(req: NextRequest) {
         // Call the actual database function with the correct parameter structure
         user = await createOrUpdateUser(
           id,
-          first_name,
-          last_name,
-          image_url,
+          first_name || '',
+          last_name || '',
+          image_url || '',
           email_addresses
         );
         console.log('User created/updated successfully:', user);
