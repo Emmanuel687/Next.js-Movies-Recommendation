@@ -1,22 +1,23 @@
 "use client";
 
-// Imports Start
+// Imports
 import React, { useEffect, useState } from "react";
-import { getTrendingAllWeek, getTopRatedMovies } from "@/app/services/tmdb-api";
+import { getTrendingAllWeek, getTopRatedMovies, TmdbMovie } from "@/app/services/tmdb-api";
 import MovieList from "@/app/components/movies/MovieList";
-// Imports End
 
-const Home = ({ params }) => {
-  // State Variables Start
-  const [results, setResults] = useState([]);
-  const [error, setError] = useState(null);
-  // State Variables End
+// Type for props
+interface PageProps {
+  params: {
+    genre: string;
+  };
+}
 
-  // Unwrap params with React.use() - NEW APPROACH
-  const unwrappedParams = React.use(params);
-  const genre = unwrappedParams.genre;
+const Home: React.FC<PageProps> = ({ params }) => {
+  const [results, setResults] = useState<TmdbMovie[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch trending movies on mount Start
+  const { genre } = params; // Destructure genre directly
+
   useEffect(() => {
     const loadTrending = async () => {
       try {
@@ -25,24 +26,21 @@ const Home = ({ params }) => {
             ? await getTopRatedMovies()
             : await getTrendingAllWeek();
         setResults(trending.results);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       }
     };
 
     loadTrending();
   }, [genre]);
-  // Fetch trending movies on mount End
 
   if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (!results.length) return <div className="p-4">Loading...</div>;
 
   return (
-    // Movie List Component Start
     <div className="p-4">
       <MovieList results={results} />
     </div>
-    // Movie List Component End
   );
 };
 
