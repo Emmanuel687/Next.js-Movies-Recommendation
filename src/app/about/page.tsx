@@ -13,7 +13,7 @@ import {
 // Imports End
 
 const page = () => {
-  // Stats and Values Data Start
+	// Stats and Values Data Start
 	const stats = [
 		{ label: "Movies Curated", value: "10,000+", icon: Play },
 		{ label: "Happy Users", value: "50K+", icon: Users },
@@ -46,7 +46,7 @@ const page = () => {
 				"Connect with movie lovers worldwide and discover hidden gems from different cultures.",
 		},
 	];
-  // Stats and Values Data End
+	// Stats and Values Data End
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br">
@@ -60,9 +60,9 @@ const page = () => {
 						</span>
 					</h1>
 					<p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-						We&apos;re passionate about connecting movie lovers with their perfect
-						cinematic experiences. Since 2020, we&apos;ve been revolutionizing how
-						people discover and enjoy films.
+						We&apos;re passionate about connecting movie lovers with their
+						perfect cinematic experiences. Since 2020, we&apos;ve been
+						revolutionizing how people discover and enjoy films.
 					</p>
 				</section>
 				{/* Hero Section End */}
@@ -93,8 +93,8 @@ const page = () => {
 							</h2>
 							<p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
 								In a world overflowing with content, we believe finding your
-								next favorite movie shouldn&apos;t be overwhelming. Our mission is to
-								use cutting-edge technology and human expertise to create
+								next favorite movie shouldn&apos;t be overwhelming. Our mission
+								is to use cutting-edge technology and human expertise to create
 								personalized recommendations that truly resonate with your
 								unique taste in cinema.
 							</p>
@@ -105,7 +105,9 @@ const page = () => {
 								</div>
 								<div className="flex items-center space-x-2">
 									<div className="w-3 h-3 bg-pink-400 rounded-full"></div>
-									<span className=" font-medium">Save Time &amp; Enjoy More</span>
+									<span className=" font-medium">
+										Save Time &amp; Enjoy More
+									</span>
 								</div>
 								<div className="flex items-center space-x-2">
 									<div className="w-3 h-3 bg-blue-400 rounded-full"></div>
@@ -152,7 +154,7 @@ const page = () => {
 						))}
 					</div>
 				</section>
-        {/* Values Section End */}
+				{/* Values Section End */}
 
 				{/* Story Section */}
 				<section className="mb-20">
@@ -172,15 +174,15 @@ const page = () => {
 									What started as a weekend project to solve her own problem
 									quickly evolved into something much bigger. By combining
 									machine learning algorithms with expert curation, we created a
-									platform that doesn&apos;t just recommend movies—it understands
-									your taste.
+									platform that doesn&apos;t just recommend movies—it
+									understands your taste.
 								</p>
 								<p className="text-lg">
 									Today, we&apos;re proud to serve over 50,000 movie lovers
 									worldwide, helping them discover everything from blockbuster
 									hits to indie gems they never would have found otherwise. Our
-									journey is just beginning, and we&apos;re excited to have you along
-									for the ride.
+									journey is just beginning, and we&apos;re excited to have you
+									along for the ride.
 								</p>
 							</div>
 						</div>

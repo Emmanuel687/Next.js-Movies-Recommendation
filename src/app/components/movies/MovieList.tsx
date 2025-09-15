@@ -1,0 +1,46 @@
+import React, { useState } from "react";
+import MovieItem from "./MovieItem";
+import Search from "../custom/Search";
+import { TmdbMovie } from "@/app/types/tmdb";
+
+type MovieListProps = {
+  results: TmdbMovie[];
+};
+
+const MovieList = ({ results }: MovieListProps) => {
+  const [query, setQuery] = useState("");
+
+  const filteredResults = results.filter((movie) =>
+    (movie.title || movie.name || "")
+      .toLowerCase()
+      .includes(query.toLowerCase())
+  );
+
+  return (
+    <div>
+      <Search
+        placeholder="Search movies..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+
+      {/* Movie Grid */}
+      <div
+        className="
+          grid 
+          grid-cols-2 sm:grid-cols-2 
+          md:grid-cols-3 
+          lg:grid-cols-4 
+          xl:grid-cols-5 
+          gap-3 sm:gap-4 md:gap-6
+        "
+      >
+        {filteredResults.map((result) => (
+          <MovieItem key={result.id} result={result} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default MovieList;

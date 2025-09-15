@@ -1,4 +1,14 @@
 @import "tailwindcss";
+:root {
+ 
+  --border: #e5e7eb; /* light gray (like border-gray-200) */
+}
+
+.dark {
+ 
+  --border: #374151; /* dark gray (like border-gray-700) */
+}
+
 
 
 body {
