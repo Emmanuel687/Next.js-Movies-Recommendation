@@ -6,10 +6,27 @@ import { getTrendingAllWeek } from "./services/tmdb-api";
 import MovieList from "./components/movies/MovieList";
 // Imports End
 
-const Home = () => {
+// Define proper TypeScript interfaces
+interface Movie {
+  id: number;
+  title?: string;
+  name?: string;
+  overview: string;
+  poster_path?: string;
+  vote_average?: number;
+  release_date?: string;
+}
 
-  // State Variables Start
-  const [results, setResults] = useState<any[]>([]);
+interface TrendingResponse {
+  results: Movie[];
+  page: number;
+  total_pages: number;
+  total_results: number;
+}
+
+const Home = () => {
+  // State Variables Start - Replace any with proper types
+  const [results, setResults] = useState<Movie[]>([]);
   const [error, setError] = useState<string | null>(null);
   // State Variables End
 
@@ -17,10 +34,10 @@ const Home = () => {
   useEffect(() => {
     const loadTrending = async () => {
       try {
-        const trending = await getTrendingAllWeek();
-        setResults(trending.results); // ✅ just the array
-      } catch (err: any) {
-        setError(err.message);
+        const trending = await getTrendingAllWeek() as TrendingResponse;
+        setResults(trending.results);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       }
     };
 
