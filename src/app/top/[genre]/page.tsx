@@ -25,8 +25,13 @@ const Home: React.FC<PageProps> = ({ params }) => {
             ? await getTopRatedMovies()
             : await getTrendingAllWeek();
         setResults(trending.results);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        // Narrow unknown to Error
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
       }
     };
 
