@@ -9,7 +9,7 @@ import { ThumbsUp, ArrowRightCircle } from "lucide-react";
 //   result: TmdbMovie;
 // };
 
-const MovieItem = ({ result }: CardProps) => {
+const MovieItem = ({ result }) => {
   // ✅ Safe fallback
   const imageUrl = result.poster_path
     ? `https://image.tmdb.org/t/p/w500${result.poster_path}`
