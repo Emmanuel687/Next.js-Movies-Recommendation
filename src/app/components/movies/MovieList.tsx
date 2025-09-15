@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MovieItem from "./MovieItem";
 import Search from "../custom/Search";
-import { TmdbMovie } from "@/app/types/tmdb";
+import { TmdbMovie } from "@/app/services/tmdb-api";
 
 type MovieListProps = {
   results: TmdbMovie[];
