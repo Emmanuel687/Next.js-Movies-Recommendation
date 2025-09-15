@@ -1,22 +1,21 @@
 "use client";
 
-// Imports
 import React, { useEffect, useState } from "react";
 import { getTrendingAllWeek, getTopRatedMovies, TmdbMovie } from "@/app/services/tmdb-api";
 import MovieList from "@/app/components/movies/MovieList";
 
 // Type for props
 interface PageProps {
-  params: {
-    genre: string;
-  };
+  params: Promise<{ genre: string }>;
 }
 
 const Home: React.FC<PageProps> = ({ params }) => {
   const [results, setResults] = useState<TmdbMovie[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const { genre } = params; // Destructure genre directly
+  // Unwrap params Promise
+  const unwrappedParams = React.use(params);
+  const genre = unwrappedParams.genre;
 
   useEffect(() => {
     const loadTrending = async () => {
