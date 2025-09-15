@@ -17,10 +17,10 @@ const Header = () => {
   // Normal Variables Start
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/movies", label: "Movies" },
-    { href: "/tv-shows", label: "TV Shows" },
+    { href: "/about", label: "About" },
+    { href: "/toprated", label: "Top Rated" },
+    { href: "/trending", label: "Trending" },
     { href: "/watchlist", label: "Watchlist" },
-    { href: "/about", label: "About" }
   ];
   // Normal Variables End
 

@@ -1,5 +1,6 @@
 // Imports Start
 import Header from "./components/Header";
+import Navbar from "./components/Navbar";
 import Providers from "./components/Theme";
 import { PrimeReactProvider } from "primereact/api";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -20,6 +21,7 @@ export default function RootLayout({
 					<Providers>
 						<PrimeReactProvider>
 							<Header />
+							<Navbar />
 							<main>{children}</main>
 						</PrimeReactProvider>
 					</Providers>
