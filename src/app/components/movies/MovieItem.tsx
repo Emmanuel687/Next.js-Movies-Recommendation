@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Card from "../custom/Card";
 import { ThumbsUp, ArrowRightCircle } from "lucide-react";
-import { TmdbMovie } from "@/app/services/tmdb-api";
+// import { TmdbMovie } from "@/app/services/tmdb-api";
 
-type CardProps = {
-  result: TmdbMovie;
-};
+// type CardProps = {
+//   result: TmdbMovie;
+// };
 
 const MovieItem = ({ result }: CardProps) => {
   // ✅ Safe fallback
