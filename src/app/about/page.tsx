@@ -1,4 +1,3 @@
-
 // Imports Start
 import React from "react";
 import {
@@ -49,9 +48,6 @@ const page = () => {
 	];
   // Stats and Values Data End
 
-
-	
-
 	return (
 		<div className="min-h-screen bg-gradient-to-br">
 			<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -64,8 +60,8 @@ const page = () => {
 						</span>
 					</h1>
 					<p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-						We're passionate about connecting movie lovers with their perfect
-						cinematic experiences. Since 2020, we've been revolutionizing how
+						We&apos;re passionate about connecting movie lovers with their perfect
+						cinematic experiences. Since 2020, we&apos;ve been revolutionizing how
 						people discover and enjoy films.
 					</p>
 				</section>
@@ -97,7 +93,7 @@ const page = () => {
 							</h2>
 							<p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
 								In a world overflowing with content, we believe finding your
-								next favorite movie shouldn't be overwhelming. Our mission is to
+								next favorite movie shouldn&apos;t be overwhelming. Our mission is to
 								use cutting-edge technology and human expertise to create
 								personalized recommendations that truly resonate with your
 								unique taste in cinema.
@@ -109,7 +105,7 @@ const page = () => {
 								</div>
 								<div className="flex items-center space-x-2">
 									<div className="w-3 h-3 bg-pink-400 rounded-full"></div>
-									<span className=" font-medium">Save Time & Enjoy More</span>
+									<span className=" font-medium">Save Time &amp; Enjoy More</span>
 								</div>
 								<div className="flex items-center space-x-2">
 									<div className="w-3 h-3 bg-blue-400 rounded-full"></div>
@@ -176,14 +172,14 @@ const page = () => {
 									What started as a weekend project to solve her own problem
 									quickly evolved into something much bigger. By combining
 									machine learning algorithms with expert curation, we created a
-									platform that doesn't just recommend movies—it understands
+									platform that doesn&apos;t just recommend movies—it understands
 									your taste.
 								</p>
 								<p className="text-lg">
-									Today, we're proud to serve over 50,000 movie lovers
+									Today, we&apos;re proud to serve over 50,000 movie lovers
 									worldwide, helping them discover everything from blockbuster
 									hits to indie gems they never would have found otherwise. Our
-									journey is just beginning, and we're excited to have you along
+									journey is just beginning, and we&apos;re excited to have you along
 									for the ride.
 								</p>
 							</div>
