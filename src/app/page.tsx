@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { getTrendingAllWeek } from "./services/tmdb-api";
 import MovieList from "./components/movies/MovieList";
+import MovieLoader from "./components/custom/Loader";
 // Imports End
 
 // Define proper TypeScript interfaces
@@ -46,7 +47,9 @@ const Home = () => {
   // Fetch trending movies on mount End
 
   if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (!results.length) return <div className="p-4">Loading...</div>;
+  if (!results.length) return <div className="p-4">
+    <MovieLoader />
+  </div>;
 
   return (
     // Movie List Component Start
