@@ -341,13 +341,13 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 							</div>
 
 							{/* Financials */}
-							{(movie?.budget > 0 || movie?.revenue > 0) && (
+							{((movie?.budget ?? 0) > 0 || (movie?.revenue ?? 0) > 0) && (
 								<div>
 									<h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
 										Financials
 									</h3>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-										{movie?.budget > 0 && (
+										{(movie?.budget ?? 0) > 0 && (
 											<div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
 												<DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
 												<div>
@@ -355,14 +355,13 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 														Budget
 													</p>
 													<p className="font-semibold text-gray-900 dark:text-gray-100">
-														${movie.budget.toLocaleString()}
+														${movie?.budget?.toLocaleString() ?? "N/A"}
 													</p>
 												</div>
 											</div>
 										)}
 
-										{/* Revenue Section Start */}
-										{movie?.revenue > 0 && (
+										{(movie?.revenue ?? 0) > 0 && (
 											<div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
 												<TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
 												<div>
@@ -370,12 +369,11 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 														Revenue
 													</p>
 													<p className="font-semibold text-gray-900 dark:text-gray-100">
-														${movie?.revenue.toLocaleString()}
+														${movie?.revenue?.toLocaleString() ?? "N/A"}
 													</p>
 												</div>
 											</div>
 										)}
-										{/* Revenue Section End */}
 									</div>
 								</div>
 							)}
