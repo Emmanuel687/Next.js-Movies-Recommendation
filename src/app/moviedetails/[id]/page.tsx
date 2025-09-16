@@ -193,7 +193,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 									</div>
 								)}
 
-								{movie.runtime && (
+								{movie?.runtime && (
 									<div className="flex flex-col items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
 										<Clock className="w-5 h-5 text-green-600 dark:text-green-400 mb-1" />
 										<span className="text-xs text-gray-600 dark:text-gray-400">
@@ -205,27 +205,27 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 									</div>
 								)}
 
-								{movie.status && (
+								{movie?.status && (
 									<div className="flex flex-col items-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
 										<Film className="w-5 h-5 text-purple-600 dark:text-purple-400 mb-1" />
 										<span className="text-xs text-gray-600 dark:text-gray-400">
 											Status
 										</span>
 										<span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-											{movie.status}
+											{movie?.status}
 										</span>
 									</div>
 								)}
 
-								{movie.spoken_languages &&
-									movie.spoken_languages.length > 0 && (
+								{movie?.spoken_languages &&
+									movie?.spoken_languages.length > 0 && (
 										<div className="flex flex-col items-center p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
 											<Globe className="w-5 h-5 text-amber-600 dark:text-amber-400 mb-1" />
 											<span className="text-xs text-gray-600 dark:text-gray-400">
 												Language
 											</span>
 											<span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-												{movie.spoken_languages[0].english_name}
+												{movie?.spoken_languages[0].english_name}
 											</span>
 										</div>
 									)}
