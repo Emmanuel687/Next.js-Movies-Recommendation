@@ -64,3 +64,10 @@ export function getTopRatedMovies(page: number = 1): Promise<TrendingResponse> {
 export function getMovieById(id: number): Promise<TmdbMovie> {
   return fetchFromTMDB(`/movie/${id}?language=en-US`) as Promise<TmdbMovie>;
 }
+
+// ✅ NEW: Search by term
+export function searchMovies(query: string, page: number = 1): Promise<TrendingResponse> {
+  return fetchFromTMDB(
+    `/search/movie?language=en-US&query=${encodeURIComponent(query)}&page=${page}&include_adult=false`
+  ) as Promise<TrendingResponse>;
+}

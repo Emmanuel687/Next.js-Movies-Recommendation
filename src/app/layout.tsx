@@ -2,6 +2,7 @@
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import Providers from "./components/Theme";
+import SearchBox from "./components/searchBox/SearchBox";
 import { PrimeReactProvider } from "primereact/api";
 import { ClerkProvider } from "@clerk/nextjs";
 import "primereact/resources/primereact.css";
@@ -22,6 +23,7 @@ export default function RootLayout({
 						<PrimeReactProvider>
 							<Header />
 							<Navbar />
+							<SearchBox />
 							<main>{children}</main>
 						</PrimeReactProvider>
 					</Providers>

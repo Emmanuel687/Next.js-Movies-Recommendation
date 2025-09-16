@@ -18,11 +18,7 @@ const MovieList = ({ results }: MovieListProps) => {
 
   return (
     <div>
-      <Search
-        placeholder="Search movies..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
+    
 
       {/* Movie Grid Start */}
       <div
