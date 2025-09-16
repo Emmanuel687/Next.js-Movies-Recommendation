@@ -341,13 +341,13 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 							</div>
 
 							{/* Financials */}
-							{(movie.budget > 0 || movie.revenue > 0) && (
+							{(movie?.budget > 0 || movie?.revenue > 0) && (
 								<div>
 									<h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
 										Financials
 									</h3>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-										{movie.budget > 0 && (
+										{movie?.budget > 0 && (
 											<div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
 												<DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
 												<div>
@@ -362,7 +362,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 										)}
 
 										{/* Revenue Section Start */}
-										{movie.revenue > 0 && (
+										{movie?.revenue > 0 && (
 											<div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
 												<TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
 												<div>
@@ -370,7 +370,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 														Revenue
 													</p>
 													<p className="font-semibold text-gray-900 dark:text-gray-100">
-														${movie.revenue.toLocaleString()}
+														${movie?.revenue.toLocaleString()}
 													</p>
 												</div>
 											</div>
@@ -382,9 +382,9 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 
 							{/* Action Buttons */}
 							<div className="flex flex-wrap gap-4">
-								{movie.homepage && (
+								{movie?.homepage && (
 									<a
-										href={movie.homepage}
+										href={movie?.homepage}
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors"
@@ -399,19 +399,19 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 
 					{/* Additional sections below */}
 					{/* Cast */}
-					{movie.cast && movie.cast.length > 0 && (
+					{movie?.cast && movie?.cast.length > 0 && (
 						<div className="p-6 border-t border-gray-200 dark:border-gray-700">
 							<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
 								Cast
 							</h3>
 							<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								{movie.cast.slice(0, 10).map((actor) => (
+								{movie?.cast.slice(0, 10).map((actor) => (
 									<div key={actor.id} className="text-center group">
 										<div className="relative w-24 h-24 mx-auto mb-3 rounded-full overflow-hidden">
 											{actor.profile_path ? (
 												<Image
-													src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
-													alt={actor.name}
+													src={`https://image.tmdb.org/t/p/w185${actor?.profile_path}`}
+													alt={actor?.name}
 													fill
 													className="object-cover group-hover:scale-110 transition-transform duration-300"
 												/>
@@ -436,14 +436,14 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 					)}
 
 					{/* Production Companies */}
-					{movie.production_companies &&
-						movie.production_companies.length > 0 && (
+					{movie?.production_companies &&
+						movie?.production_companies.length > 0 && (
 							<div className="p-6 border-t border-gray-200 dark:border-gray-700">
 								<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
 									Production Companies
 								</h3>
 								<div className="flex flex-wrap gap-6">
-									{movie.production_companies.map((c) => (
+									{movie?.production_companies.map((c) => (
 										<div
 											key={c.id}
 											className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
@@ -474,16 +474,16 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 						)}
 
 					{/* Collection */}
-					{movie.belongs_to_collection && (
+					{movie?.belongs_to_collection && (
 						<div className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
 							<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-								Part of the {movie.belongs_to_collection.name} Collection
+								Part of the {movie?.belongs_to_collection.name} Collection
 							</h3>
-							{movie.belongs_to_collection.poster_path && (
+							{movie?.belongs_to_collection.poster_path && (
 								<div className="relative w-40 h-60">
 									<Image
-										src={`https://image.tmdb.org/t/p/w500${movie.belongs_to_collection.poster_path}`}
-										alt={movie.belongs_to_collection.name}
+										src={`https://image.tmdb.org/t/p/w500${movie?.belongs_to_collection.poster_path}`}
+										alt={movie?.belongs_to_collection.name}
 										fill
 										className="object-cover rounded-lg shadow-lg"
 									/>
