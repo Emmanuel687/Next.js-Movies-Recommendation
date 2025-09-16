@@ -24,13 +24,13 @@ const MovieList = ({ results }: MovieListProps) => {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {/* Movie Grid */}
+      {/* Movie Grid Start */}
       <div
         className="
           grid 
-          grid-cols-2 sm:grid-cols-2 
-          md:grid-cols-3 
-          lg:grid-cols-4 
+          grid-cols-1 sm:grid-cols-1 
+          md:grid-cols-2
+          lg:grid-cols-3 
           xl:grid-cols-5 
           gap-3 sm:gap-4 md:gap-6
         "
@@ -39,6 +39,7 @@ const MovieList = ({ results }: MovieListProps) => {
           <MovieItem key={result.id} result={result} />
         ))}
       </div>
+      {/* Movie Grid End */}
     </div>
   );
 };

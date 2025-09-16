@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { TrendingUp, Star } from "lucide-react";
 
 interface NavbarItemProps {
   title: string;
@@ -10,30 +11,75 @@ interface NavbarItemProps {
 
 const NavbarItem: React.FC<NavbarItemProps> = ({ title, param }) => {
   const pathname = usePathname();
-  const genre = pathname.split("/")[2]; // Get active param from URL
+  const genre = pathname.split("/")[2];
   const isActive = genre === param;
+
+  const getIcon = () => {
+    switch (param) {
+      case "trending":
+        return <TrendingUp className="w-3.5 h-3.5" />;
+      case "rated":
+        return <Star className="w-3.5 h-3.5" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Link href={`/top/${param}`}>
-      <div className="relative cursor-pointer px-2 group">
-        <h2
-          className={`text-sm font-medium tracking-wide transition-colors duration-300 ${
-            isActive
-              ? "text-purple-500 dark:text-purple-400"
-              : "text-gray-600 dark:text-gray-400 group-hover:text-purple-400"
-          }`}
+      <div
+        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer transition-all duration-300 group`}
+        style={{
+          backgroundColor: isActive
+            ? "var(--background)"
+            : "transparent",
+          color: isActive
+            ? "var(--foreground)"
+            : "var(--foreground)",
+          border: isActive
+            ? `1px solid var(--border)`
+            : `1px solid transparent`,
+        }}
+      >
+        {/* Icon */}
+        <div
+          className={`flex-shrink-0 flex items-center justify-center transition-all duration-300`}
+          style={{
+            color: isActive ? "var(--foreground)" : "var(--foreground)",
+          }}
+        >
+          {getIcon()}
+        </div>
+
+        {/* Title */}
+        <h1
+          className="text-xs font-semibold tracking-wide flex items-center transition-all duration-300"
+          style={{
+            color: isActive ? "var(--foreground)" : "var(--foreground)",
+          }}
         >
           {title}
-        </h2>
+        </h1>
 
-        {/* Animated active indicator */}
-        <div
-          className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300 ${
-            isActive
-              ? "w-full opacity-100"
-              : "w-0 opacity-0 group-hover:w-3/4 group-hover:opacity-100"
-          }`}
-        />
+        {/* Active indicator dot */}
+        {isActive && (
+          <div
+            className="absolute -top-1 -right-1 w-2 h-2 rounded-full animate-pulse"
+            style={{
+              background: "linear-gradient(to right, #6366F1, #A78BFA)",
+            }}
+          />
+        )}
+
+        {/* Subtle glow effect for active state */}
+        {isActive && (
+          <div
+            className="absolute inset-0 rounded-full animate-pulse"
+            style={{
+              background: "linear-gradient(to right, #6366F133, #A78BFA33)",
+            }}
+          />
+        )}
       </div>
     </Link>
   );
