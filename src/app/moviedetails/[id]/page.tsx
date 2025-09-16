@@ -6,17 +6,17 @@ import Image from "next/image";
 import Card from "@/app/components/custom/Card";
 import { getMovieById, TmdbMovie } from "@/app/services/tmdb-api";
 import {
-  Link as LinkIcon,
-  Clock,
-  Calendar,
-  Film,
-  Globe,
-  DollarSign,
-  TrendingUp,
-  Star,
-  Users,
-  Mic,
-  Award,
+	Link as LinkIcon,
+	Clock,
+	Calendar,
+	Film,
+	Globe,
+	DollarSign,
+	TrendingUp,
+	Star,
+	Users,
+	Mic,
+	Award,
 } from "lucide-react";
 import Loader from "@/app/components/custom/Loader";
 import AddToFav from "@/app/components/favorite/AddToFav";
@@ -24,61 +24,59 @@ import AddToFav from "@/app/components/favorite/AddToFav";
 
 // Types Start
 interface MovieCast {
-  id: number;
-  name: string;
-  character?: string;
-  profile_path?: string;
+	id: number;
+	name: string;
+	character?: string;
+	profile_path?: string;
 }
 
 interface MovieCrew {
-  id: number;
-  name: string;
-  job: string;
-  profile_path?: string;
+	id: number;
+	name: string;
+	job: string;
+	profile_path?: string;
 }
 
 interface ProductionCompany {
-  id: number;
-  name: string;
-  logo_path?: string;
+	id: number;
+	name: string;
+	logo_path?: string;
 }
 
 interface Collection {
-  id: number;
-  name: string;
-  poster_path?: string;
+	id: number;
+	name: string;
+	poster_path?: string;
 }
 
 interface DetailedMovie {
-  id: number;
-  title?: string;
-  backdrop_path?: string;
-  poster_path?: string;
-  overview?: string;
-  release_date?: string;
-  first_air_date?: string;
-  vote_average?: number;
-  vote_count?: number;
-  tagline?: string;
-  homepage?: string;
-  budget?: number;
-  revenue?: number;
-  status?: string;
-  genres?: Array<{ id: number; name: string }>;
-  production_companies?: ProductionCompany[];
-  belongs_to_collection?: Collection;
-  spoken_languages?: Array<{ iso_639_1: string; english_name: string }>;
-  cast?: MovieCast[];
-  crew?: MovieCrew[];
-  runtime?: number;
+	id: number;
+	title?: string;
+	backdrop_path?: string;
+	poster_path?: string;
+	overview?: string;
+	release_date?: string;
+	first_air_date?: string;
+	vote_average?: number;
+	vote_count?: number;
+	tagline?: string;
+	homepage?: string;
+	budget?: number;
+	revenue?: number;
+	status?: string;
+	genres?: Array<{ id: number; name: string }>;
+	production_companies?: ProductionCompany[];
+	belongs_to_collection?: Collection;
+	spoken_languages?: Array<{ iso_639_1: string; english_name: string }>;
+	cast?: MovieCast[];
+	crew?: MovieCrew[];
+	runtime?: number;
 }
-
 interface MovieItemProps {
-  params: { id: string };
+	params: Promise<{ id: string }>;
 }
+
 // Types End
-
-
 
 const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 	// State Variables Start
@@ -94,7 +92,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 				setLoading(true);
 				const data = await getMovieById(parseInt(id));
 				setMovie(data as DetailedMovie);
-			} catch (err: unknown) {
+			} catch (err) {
 				console.error("Error fetching movie:", err);
 			} finally {
 				setLoading(false);
