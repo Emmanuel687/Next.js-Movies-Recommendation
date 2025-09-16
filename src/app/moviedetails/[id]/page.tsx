@@ -6,7 +6,6 @@ import Image from "next/image";
 import Card from "@/app/components/custom/Card";
 import { getMovieById, TmdbMovie } from "@/app/services/tmdb-api";
 import {
-	ThumbsUp,
 	Link as LinkIcon,
 	Clock,
 	Calendar,
@@ -15,7 +14,6 @@ import {
 	DollarSign,
 	TrendingUp,
 	Star,
-	Heart,
 	Users,
 	Mic,
 	Award,
@@ -55,8 +53,6 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 	const { id } = React.use(params);
 	const [movie, setMovie] = useState<DetailedMovie | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [favorite, setFavorite] = useState(false);
 	// State Variables End
 
 	// Fetch Movie Details by ID on Mount Start
@@ -67,8 +63,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 				const data = await getMovieById(parseInt(id));
 				setMovie(data as DetailedMovie);
 			} catch (err: unknown) {
-				if (err instanceof Error) setError(err.message);
-				else setError("An unexpected error occurred.");
+				console.error("Error fetching movie:", err);
 			} finally {
 				setLoading(false);
 			}
@@ -97,7 +92,8 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 						Movie not found
 					</h2>
 					<p className="text-gray-600 dark:text-gray-400">
-						The movie you're looking for doesn't exist or has been removed.
+						The movie you&apos;re looking for doesn&apos;t exist or has been
+						removed.
 					</p>
 				</div>
 			</div>
@@ -115,7 +111,6 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 	const writers = movie.crew?.filter(
 		(person) => person.job === "Writer" || person.job === "Screenplay"
 	);
-	const producers = movie.crew?.filter((person) => person.job === "Producer");
 	// Filter key crew members End
 
 	return (
@@ -168,7 +163,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 								</h1>
 								{movie.tagline && (
 									<p className="text-lg italic text-indigo-600 dark:text-indigo-400 mt-2">
-										"{movie.tagline}"
+										&quot;{movie.tagline}&quot;
 									</p>
 								)}
 							</div>
@@ -368,20 +363,6 @@ const MovieItem: React.FC<MovieItemProps> = ({ params }) => {
 										Official Website
 									</a>
 								)}
-
-								<button
-									onClick={() => setFavorite((prev) => !prev)}
-									className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-										favorite
-											? "bg-red-600 text-white hover:bg-red-700"
-											: "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
-									}`}
-								>
-									<Heart
-										className={`w-4 h-4 ${favorite ? "fill-current" : ""}`}
-									/>
-									{favorite ? "Added to Favorites" : "Add to Favorites"}
-								</button>
 							</div>
 						</div>
 					</div>
