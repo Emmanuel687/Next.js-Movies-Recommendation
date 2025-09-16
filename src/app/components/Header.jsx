@@ -18,9 +18,7 @@ const Header = () => {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/toprated", label: "Top Rated" },
-    { href: "/trending", label: "Trending" },
-    { href: "/watchlist", label: "Watchlist" },
+ 
   ];
   // Normal Variables End
 
