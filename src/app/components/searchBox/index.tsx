@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import SearchBox from "../custom/Search"; // ✅ import correctly
+import SearchBox from "../custom/Search"; 
 import { useRouter } from "next/navigation";
 
 const SearchPage = () => {
@@ -17,7 +17,7 @@ const SearchPage = () => {
 
   return (
     <div className="p-6">
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form onSubmit={handleSubmit} className="flex gap-2 ">
         <SearchBox
           placeholder="Search movies..."
           value={query}

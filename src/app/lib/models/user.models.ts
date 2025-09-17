@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   profilePicture: { type: String, required: true },
-  fav: { type: [favSchema], default: [] },
+  favs: { type: [favSchema], default: [] },
 },
   { timestamps: true });
 

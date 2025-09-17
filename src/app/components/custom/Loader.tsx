@@ -1,27 +1,16 @@
-import React from 'react';
-import { Play } from 'lucide-react';
+import React from "react";
 
 const MovieLoader = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        {/* Simple spinning play icon */}
-        <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
-          <Play className="w-8 h-8 text-white ml-1" />
-        </div>
-        
-        {/* Loading text */}
-        <p className="text-white text-lg">Loading...</p>
-        
-        {/* Simple dots */}
-        <div className="flex justify-center space-x-1 mt-4">
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-100"></div>
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-200"></div>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="min-h-screen flex items-center justify-center">
+			<div className="flex flex-col items-center gap-4">
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+				<p className="text-gray-600 dark:text-gray-400">
+					Loading Movies
+				</p>
+			</div>
+		</div>
+	);
 };
 
 export default MovieLoader;

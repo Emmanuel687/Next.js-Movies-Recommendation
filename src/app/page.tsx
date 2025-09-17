@@ -2,62 +2,90 @@
 
 // Imports Start
 import React, { useEffect, useState } from "react";
-import { getTrendingAllWeek } from "./services/tmdb-api";
+import { getTopRatedMovies } from "./services/tmdb-api";
 import MovieList from "./components/movies/MovieList";
 import MovieLoader from "./components/custom/Loader";
+import Paginator from "./components/paginator";
 // Imports End
 
-// Define proper TypeScript interfaces
+// PropType Start
 interface Movie {
-  id: number;
-  title?: string;
-  name?: string;
-  overview: string;
-  poster_path?: string;
-  vote_average?: number;
-  release_date?: string;
+	id: number;
+	title?: string;
+	name?: string;
+	overview: string;
+	poster_path?: string;
+	vote_average?: number;
+	release_date?: string;
 }
 
 interface TrendingResponse {
-  results: Movie[];
-  page: number;
-  total_pages: number;
-  total_results: number;
+	results: Movie[];
+	page: number;
+	total_pages: number;
+	total_results: number;
 }
+// PropType End
 
 const Home = () => {
-  // State Variables Start - Replace any with proper types
-  const [results, setResults] = useState<Movie[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  // State Variables End
+	// State Variables Start
+	const [results, setResults] = useState<Movie[]>([]);
+	const [error, setError] = useState<string | null>(null);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
+	const [isLoading, setIsLoading] = useState(true);
+	// State Variables End
 
-  // Fetch trending movies on mount Start
-  useEffect(() => {
-    const loadTrending = async () => {
-      try {
-        const trending = await getTrendingAllWeek() as TrendingResponse;
-        setResults(trending.results);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      }
-    };
+	// Fetch TopRated movies Start
+	useEffect(() => {
+		const loadTrending = async () => {
+			setIsLoading(true);
+			try {
+				const trending = (await getTopRatedMovies(
+					currentPage
+				)) as TrendingResponse;
+				setResults(trending.results);
+				setTotalPages(Math.min(trending.total_pages, 500)); // TMDB limits to 500 pages
+			} catch (err: unknown) {
+				setError(
+					err instanceof Error ? err.message : "An unknown error occurred"
+				);
+			} finally {
+				setIsLoading(false);
+			}
+		};
 
-    loadTrending();
-  }, []);
-  // Fetch trending movies on mount End
+		loadTrending();
+	}, [currentPage]);
+	// Fetch TopRated movies End
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (!results.length) return <div className="p-4">
-    <MovieLoader />
-  </div>;
+	// Handle Page Change Start
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page);
+		// Scroll to top when page changes
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+  //  Handle Page Change End
 
-  return (
-    // Movie List Component Start
-    <div className="p-4">
-      <MovieList results={results} />
-    </div>
-    // Movie List Component End
-  );
+	if (error)
+		return <div className="text-center py-10 text-red-500">{error}</div>;
+
+	if (isLoading) return <MovieLoader />;
+
+	return (
+		<div>
+			<MovieList results={results} />
+			<Paginator
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={handlePageChange}
+				className="mt-10"
+				maxVisiblePages={7}
+				showPageInfo={true}
+				showNavigation={true}
+			/>
+		</div>
+	);
 };
 
 export default Home;

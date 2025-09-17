@@ -3,7 +3,7 @@ import NavbarItem from "./NavbarItem";
 
 const Navbar = () => {
   return (
-    <nav className="sticky top-0 z-40 w-full">
+    <nav className="fixed top-16 left-0 right-0 z-40 w-full"> {/* Changed from sticky to fixed, added top-16 */}
       {/* Enhanced Background with better blur */}
       <div
         className="backdrop-blur-2xl border-b shadow-lg transition-all duration-300"

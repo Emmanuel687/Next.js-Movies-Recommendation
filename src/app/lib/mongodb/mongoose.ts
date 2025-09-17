@@ -1,12 +1,10 @@
+// lib/mongodb/mongoose.ts
 import mongoose from "mongoose";
 
-let initialized = false;
+let isConnected = false;
 
-export const connectToDB = async () => {
-  mongoose.set("strictQuery", true);
-
-  if (initialized) {
-    console.log("MongoDB is already connected");
+export const connect = async () => {
+  if (isConnected) {
     return;
   }
 
@@ -14,9 +12,10 @@ export const connectToDB = async () => {
     await mongoose.connect(process.env.MONGODB_URI!, {
       dbName: "new-next-imb",
     });
-    initialized = true;
-    console.log("MongoDB connected");
+    isConnected = true;
+    console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("MongoDB connection error:", error);
+    throw new Error("Database connection failed"); // Throw error to handle it properly
   }
 };
