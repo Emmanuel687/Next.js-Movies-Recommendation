@@ -9,7 +9,7 @@
 
 import AddToFav from "../app/components/favorite/AddToFav";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -23,6 +23,9 @@ vi.mock("@clerk/nextjs", () => ({
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
 }));
+
+// Mock fetch globally
+global.fetch = vi.fn();
 
 describe("AddToFav Component", () => {
   const mockPush = vi.fn();
@@ -39,8 +42,14 @@ describe("AddToFav Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as any).mockReturnValue({ push: mockPush });
-    (useUser as any).mockReturnValue(mockUser);
+    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    (useUser as jest.Mock).mockReturnValue(mockUser);
+    
+    // Mock fetch to resolve successfully
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ favs: [] }),
+    });
   });
 
   afterEach(() => {
@@ -50,26 +59,35 @@ describe("AddToFav Component", () => {
   // ✅ Test 1: Renders correctly for signed-in users
   it("renders correctly for signed-in users", async () => {
     render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
-    expect(await screen.findByRole("button")).toBeInTheDocument();
-    expect(await screen.findByText("Add to Favorites")).toBeInTheDocument();
-    expect(await screen.findByLabelText("Add to favorites")).toBeInTheDocument();
+    
+    // Wait for the component to finish initializing
+    await waitFor(() => {
+      expect(screen.getByRole("button")).toBeInTheDocument();
+    });
+    
+    expect(screen.getByText("Add to Favorites")).toBeInTheDocument();
+    expect(screen.getByLabelText("Add to favorites")).toBeInTheDocument();
   });
 
   // ✅ Test 2: Renders correctly for signed-out users
   it("renders correctly for signed-out users", async () => {
-    (useUser as any).mockReturnValue({
+    (useUser as jest.Mock).mockReturnValue({
       isSignedIn: false,
       user: null,
       isLoaded: true,
     });
 
     render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
-    expect(await screen.findByText("Add to Favorites")).toBeInTheDocument();
+    
+    // Wait for the component to finish initializing
+    await waitFor(() => {
+      expect(screen.getByText("Add to Favorites")).toBeInTheDocument();
+    });
   });
 
   // ✅ Test 3: Shows loading state when not loaded
   it("shows loading state when not loaded", () => {
-    (useUser as any).mockReturnValue({
+    (useUser as jest.Mock).mockReturnValue({
       isSignedIn: false,
       user: null,
       isLoaded: false,
@@ -82,16 +100,50 @@ describe("AddToFav Component", () => {
 
   // ✅ Test 4: Redirects to sign-in when user is not signed in
   it("redirects to sign-in when user is not signed in", async () => {
-    (useUser as any).mockReturnValue({
+    (useUser as jest.Mock).mockReturnValue({
       isSignedIn: false,
       user: null,
       isLoaded: true,
     });
 
     render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
-    const button = await screen.findByRole("button", { name: /add to favorites/i });
+    
+    // Wait for the component to finish initializing
+    await waitFor(() => {
+      expect(screen.getByRole("button")).toBeInTheDocument();
+    });
+    
+    const button = screen.getByRole("button", { name: /add to favorites/i });
     fireEvent.click(button);
 
     expect(mockPush).toHaveBeenCalledWith("/sign-in");
+  });
+
+  // ✅ Test 5: Verify fetch is called with correct URL
+  it("calls fetch with correct URL", async () => {
+    render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
+    
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith("/api/user/fav");
+    });
+  });
+
+  // ✅ Test 6: Handles fetch errors gracefully
+  it("handles fetch errors gracefully", async () => {
+    // Mock fetch to reject
+    (global.fetch as jest.Mock).mockRejectedValueOnce(new Error("API error"));
+    
+    // Mock console.error to avoid error output in tests
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
+    
+    // Component should still render despite the error
+    await waitFor(() => {
+      expect(screen.getByRole("button")).toBeInTheDocument();
+    });
+
+    // Restore console.error
+    consoleErrorSpy.mockRestore();
   });
 });
