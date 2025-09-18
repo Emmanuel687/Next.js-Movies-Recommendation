@@ -11,7 +11,7 @@ on:
       - development
 
 jobs:
-  # Job 1: Lint + Tests
+  # Job 1: Lint + Test
   test-and-lint:
     runs-on: ubuntu-latest
     steps:
@@ -23,16 +23,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Cache Node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run lint
         run: npm run lint
@@ -40,10 +32,11 @@ jobs:
       - name: Run tests
         run: npm run test
 
-  # Job 2: Deploy
+  # Job 2: Deploy (runs only if lint/tests pass)
   deploy:
     needs: test-and-lint
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Deploy only from main branch
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -54,14 +47,9 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            npx vercel --prod --confirm
-          else
-            npx vercel --confirm
-          fi
+        run: npx vercel --prod --confirm
