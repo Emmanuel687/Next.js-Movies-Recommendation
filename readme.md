@@ -27,18 +27,39 @@ A responsive movie recommendation platform built with **Next.js** and **Tailwind
 
 ### 🎥 Movie Browsing
 - Dynamic movie listings with posters, trailers, descriptions, ratings, and reviews  
-- Search movies by title, genre, release year, and rating  
+- Search movies by title
 - Responsive grid layout for desktop and mobile  
+-Top-rated and trending movie sections
+-Detailed movie pages with cast information and reviews
+
+
 
 ### ⭐ Personalization
 - Add/remove movies from a personal watchlist  
-- Submit and read reviews from other users  
-- Track recently viewed movies  
+- View Other Similar Movies   
+- Favorite movies collection with easy access
+
+
 
 ### 🌙 User Experience
-- Dark mode toggle for a sleek, modern look  
+- Dark mode toggle for a sleek, modern look
+- Smooth animations and transitions
+- Loading states and error handling
+- Responsive design for all screen sizes
 
----
+
+
+<img width="1920" height="993" alt="ScreenShot Tool -20250919004946" src="https://github.com/user-attachments/assets/78413850-1763-404c-9cfb-1e8aabee10f7" />
+
+<img width="1920" height="993" alt="ScreenShot Tool -20250919005105 (1)" src="https://github.com/user-attachments/assets/99c99454-531d-4eb8-8986-4ad4ff6a1309" />
+
+<img width="1920" height="993" alt="ScreenShot Tool -20250919005230" src="https://github.com/user-attachments/assets/60d58c6a-4bb1-41da-a4dc-cda3a2f0ad37" />
+
+<img width="1920" height="993" alt="ScreenShot Tool -20250919005353" src="https://github.com/user-attachments/assets/6222c581-efef-471e-9004-b65126ee210e" />
+
+<img width="1920" height="993" alt="ScreenShot Tool -20250919005453" src="https://github.com/user-attachments/assets/3496099e-c13a-4e76-b18a-e04da16bd104" />
+
+<img width="1920" height="993" alt="ScreenShot Tool -20250919005030" src="https://github.com/user-attachments/assets/a455917e-8f51-4e9c-901c-791b05dcb86d" />
 
 ## 🚀 Getting Started
 
@@ -117,3 +138,26 @@ The project is deployed on Vercel:
 Automatic CI/CD pipeline runs linting and unit tests on every push or pull request to main.
 
 Once checks pass, the project is deployed to production.
+
+🔧 Configuration
+Clerk Setup
+Create a Clerk account at clerk.dev
+
+Create a new application
+
+Copy API keys to environment variables
+
+MongoDB Setup
+Create a MongoDB Atlas account or use local MongoDB
+
+Create a new database and collection
+
+Update connection string in environment variables
+
+TMDB API Setup
+Register at The Movie Database
+
+Generate API key from account settings
+
+Add API key to environment variables
+
