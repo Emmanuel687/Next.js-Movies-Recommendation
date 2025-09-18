@@ -1,8 +1,7 @@
-import User from "../models/user.models";
+import User, { IUser } from "../models/user.models";
 import { connect } from "../mongodb/mongoose";
-import { IUser } from "../models/user.models"; // Import the interface from your model
 
-// Define types for email addresses from Clerk
+// Clerk email type
 interface ClerkEmailAddress {
   email_address: string;
   id: string;
@@ -12,7 +11,7 @@ interface ClerkEmailAddress {
   };
 }
 
-// Define the user type that matches your MongoDB schema
+// Database representation
 interface DatabaseUser {
   _id: string;
   clerkId: string;
@@ -20,21 +19,14 @@ interface DatabaseUser {
   lastName: string;
   email: string;
   profilePicture: string;
-  favs: Array<{
-    movieId: string;
-    title: string;
-    description: string;
-    dateReleased: Date;
-    rating: number;
-    image: string;
-  }>;
+  favs: IUser["favs"];
   createdAt: Date;
   updatedAt: Date;
   __v?: number;
 }
 
-// Helper function to convert Mongoose document to DatabaseUser
-const convertToDatabaseUser = (user: any): DatabaseUser => {
+// Convert Mongoose doc -> DatabaseUser
+const convertToDatabaseUser = (user: IUser): DatabaseUser => {
   return {
     _id: user._id.toString(),
     clerkId: user.clerkId,
@@ -45,7 +37,7 @@ const convertToDatabaseUser = (user: any): DatabaseUser => {
     favs: user.favs,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
-    __v: user.__v
+    __v: (user as any).__v, // optional
   };
 };
 
@@ -72,13 +64,9 @@ export const createOrUpdateUser = async (
       { upsert: true, new: true, runValidators: true }
     );
 
-    if (!userDoc) {
-      throw new Error("User not found or created");
-    }
+    if (!userDoc) throw new Error("User not found or created");
 
-    // Convert to plain object and return with proper typing
-    const userObject = userDoc.toObject();
-    return convertToDatabaseUser(userObject);
+    return convertToDatabaseUser(userDoc);
   } catch (error) {
     console.error("Error: Could not create/update user", error);
     throw new Error(
@@ -92,12 +80,8 @@ export const createOrUpdateUser = async (
 export const deleteUser = async (id: string): Promise<void> => {
   try {
     await connect();
-
     const result = await User.findOneAndDelete({ clerkId: id });
-
-    if (!result) {
-      console.warn(`User with clerkId ${id} not found for deletion`);
-    }
+    if (!result) console.warn(`User with clerkId ${id} not found for deletion`);
   } catch (error) {
     console.error("Error: Could not delete user", error);
     throw new Error(
@@ -113,12 +97,9 @@ export const getUserByClerkId = async (
 ): Promise<DatabaseUser | null> => {
   try {
     await connect();
-    const userDoc = await User.findOne({ clerkId }).lean();
-    
+    const userDoc = await User.findOne({ clerkId }).lean<IUser>();
     if (!userDoc) return null;
-    
-    // Return with proper typing
-    return convertToDatabaseUser(userDoc);
+    return convertToDatabaseUser(userDoc as IUser);
   } catch (error) {
     console.error("Error fetching user by clerkId:", error);
     throw new Error(
@@ -142,13 +123,9 @@ export const updateUserFavorites = async (
       { new: true, runValidators: true }
     );
 
-    if (!userDoc) {
-      throw new Error("User not found");
-    }
+    if (!userDoc) throw new Error("User not found");
 
-    // Convert to plain object and return with proper typing
-    const userObject = userDoc.toObject();
-    return convertToDatabaseUser(userObject);
+    return convertToDatabaseUser(userDoc);
   } catch (error) {
     console.error("Error updating user favorites:", error);
     throw new Error(
@@ -156,5 +133,5 @@ export const updateUserFavorites = async (
         error instanceof Error ? error.message : "Unknown error"
       }`
     );
-  };
+  }
 };
