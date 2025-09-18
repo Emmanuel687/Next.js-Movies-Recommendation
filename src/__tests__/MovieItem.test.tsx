@@ -10,17 +10,19 @@
  * The next/image component is mocked for compatibility with the test environment.
  */
 
-
 import { render, screen } from "@testing-library/react";
 import MovieItem, { TmdbMovie } from "@/app/components/movies/MovieItem";
 import "@testing-library/jest-dom";
 import { vi, describe, it, expect } from "vitest";
+import { ImageProps } from "next/image";
 
+// Properly mock the next/image component with TypeScript typing
 vi.mock("next/image", () => {
   return {
     __esModule: true,
-    default: (props: any) => {
-      return <img {...props} alt={props.alt} />;
+    default: (props: ImageProps) => {
+      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+      return <img src={props.src as string} alt={props.alt} />;
     },
   };
 });

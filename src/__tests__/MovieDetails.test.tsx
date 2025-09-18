@@ -1,3 +1,11 @@
+// This test suite validates all critical behaviors of MovieDetails:
+
+// ✅ Data fetching lifecycle (loading → success/error)
+// ✅ Rendering of required fields (title, overview)
+// ✅ Rendering of optional fields (genres, cast, crew, companies, financials)
+// ✅ Error fallback when API fails or movie is missing
+// ✅ Ensuring correct interaction with the service layer
+
 import { vi, describe, it, expect, afterEach, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import MovieDetails from "@/app/components/movies/MovieDetails";
