@@ -26,7 +26,9 @@ interface DatabaseUser {
 }
 
 // Convert Mongoose doc -> DatabaseUser
-const convertToDatabaseUser = (user: IUser): DatabaseUser => {
+const convertToDatabaseUser = (
+  user: IUser & { __v?: number }
+): DatabaseUser => {
   return {
     _id: user._id.toString(),
     clerkId: user.clerkId,
@@ -37,7 +39,7 @@ const convertToDatabaseUser = (user: IUser): DatabaseUser => {
     favs: user.favs,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
-    __v: (user as any).__v, // optional
+    __v: user.__v,
   };
 };
 
@@ -66,7 +68,7 @@ export const createOrUpdateUser = async (
 
     if (!userDoc) throw new Error("User not found or created");
 
-    return convertToDatabaseUser(userDoc);
+    return convertToDatabaseUser(userDoc as IUser & { __v?: number });
   } catch (error) {
     console.error("Error: Could not create/update user", error);
     throw new Error(
@@ -97,9 +99,9 @@ export const getUserByClerkId = async (
 ): Promise<DatabaseUser | null> => {
   try {
     await connect();
-    const userDoc = await User.findOne({ clerkId }).lean<IUser>();
+    const userDoc = await User.findOne({ clerkId }).lean<IUser & { __v?: number }>();
     if (!userDoc) return null;
-    return convertToDatabaseUser(userDoc as IUser);
+    return convertToDatabaseUser(userDoc);
   } catch (error) {
     console.error("Error fetching user by clerkId:", error);
     throw new Error(
@@ -125,7 +127,7 @@ export const updateUserFavorites = async (
 
     if (!userDoc) throw new Error("User not found");
 
-    return convertToDatabaseUser(userDoc);
+    return convertToDatabaseUser(userDoc as IUser & { __v?: number });
   } catch (error) {
     console.error("Error updating user favorites:", error);
     throw new Error(
