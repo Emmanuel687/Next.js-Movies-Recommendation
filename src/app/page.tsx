@@ -78,21 +78,20 @@ const Home = () => {
 
 	return (
 		// Home Page Route Start
-		<div>
-			{/* Movie List Component Start*/}
+<div className="p-4">
+			{/* Movie List Component Start */}
 			<MovieList results={results} />
 			{/* Movie List Component End */}
 
 			{/* Paginator Start */}
-			<Paginator
-				currentPage={currentPage}
-				totalPages={totalPages}
-				onPageChange={handlePageChange}
-				className="mt-10"
-				maxVisiblePages={7}
-				showPageInfo={true}
-				showNavigation={true}
-			/>
+			{totalPages > 1 && (
+				<Paginator
+					currentPage={currentPage}
+					totalPages={totalPages}
+					onPageChange={handlePageChange}
+					className="mt-8"
+				/>
+			)}
 			{/* Paginator End */}
 		</div>
 		// Home Page Route End
