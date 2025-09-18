@@ -1,16 +1,8 @@
-// This test suite validates all critical behaviors of MovieDetails:
-
-// ✅ Data fetching lifecycle (loading → success/error)
-// ✅ Rendering of required fields (title, overview)
-// ✅ Rendering of optional fields (genres, cast, crew, companies, financials)
-// ✅ Error fallback when API fails or movie is missing
-// ✅ Ensuring correct interaction with the service layer
-
-
 import { vi, describe, it, expect, afterEach, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import MovieDetails from "@/app/components/movies/MovieDetails";
 import { getMovieById } from "@/app/services/tmdb-api";
+import { ImageProps } from "next/image";
 
 // Mock Next.js router
 vi.mock("next/navigation", () => ({
@@ -26,10 +18,11 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-// Mock Next.js Image component
+// Mock Next.js Image component with proper typing
 vi.mock("next/image", () => ({
-  default: ({ src, alt, ...props }: any) => (
-    <img src={src} alt={alt} {...props} />
+  default: ({ src, alt, ...props }: ImageProps) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src as string} alt={alt} {...props} />
   ),
 }));
 
@@ -51,9 +44,9 @@ vi.mock("@/app/services/tmdb-api", () => ({
   getMovieById: vi.fn(),
 }));
 
-// Mock the Card component
+// Mock the Card component with proper typing
 vi.mock("@/app/components/custom/Card", () => ({
-  default: ({ children, className }: any) => (
+  default: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div className={className} data-testid="card">
       {children}
     </div>
@@ -65,9 +58,9 @@ vi.mock("@/app/components/custom/Loader", () => ({
   default: () => <div data-testid="loader">Loading movies...</div>,
 }));
 
-// Mock the AddToFav component to avoid router issues
+// Mock the AddToFav component to avoid router issues with proper typing
 vi.mock("@/app/components/favorite/AddToFav", () => ({
-  default: ({ movieId, title }: any) => (
+  default: ({ movieId, title }: { movieId: number; title: string }) => (
     <button data-testid="add-to-fav">
       Add {title} to favorites (ID: {movieId})
     </button>
