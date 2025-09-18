@@ -20,8 +20,8 @@
  * and error conditions gracefully while keeping predictable behavior.
  */
 
-
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import { Movie, MovieDetails, MoviesResponse } from "@/app/services/tmdb-api";
 
 // ===========================================
 // MOCK SETUP - Clean and Simple Approach
@@ -29,7 +29,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
 // Mock the TMDB API service functions
 vi.mock('@/app/services/tmdb-api', async () => {
-  const actual = await vi.importActual('@/app/services/tmdb-api') as any;
+  const actual = await vi.importActual<typeof import('@/app/services/tmdb-api')>('@/app/services/tmdb-api');
   
   return {
     ...actual,
@@ -58,7 +58,7 @@ const mockedSearchMovies = vi.mocked(searchMovies);
 // TEST DATA - Reusable Mock Responses
 // ===========================================
 
-const mockMovie = {
+const mockMovie: Movie = {
   id: 550,
   title: "Fight Club",
   overview: "A ticking-time-bomb insomniac and a slippery soap salesman...",
@@ -75,14 +75,14 @@ const mockMovie = {
   video: false
 };
 
-const mockMoviesResponse = {
+const mockMoviesResponse: MoviesResponse = {
   page: 1,
   results: [mockMovie],
   total_pages: 500,
   total_results: 10000
 };
 
-const mockSearchResponse = {
+const mockSearchResponse: MoviesResponse = {
   page: 1,
   results: [
     {
@@ -95,7 +95,7 @@ const mockSearchResponse = {
   total_results: 1
 };
 
-const mockMovieDetails = {
+const mockMovieDetails: MovieDetails = {
   ...mockMovie,
   runtime: 139,
   budget: 63000000,
@@ -111,7 +111,18 @@ const mockMovieDetails = {
       logo_path: "/7PzJdsLGlR7oW4J0J5Xcd0pHGRg.png",
       origin_country: "US"
     }
-  ]
+  ],
+  status: "Released",
+  tagline: "How much can you know about yourself if you've never been in a fight?",
+  imdb_id: "tt0137523",
+  homepage: "http://www.foxmovies.com/movies/fight-club",
+  spoken_languages: [
+    { english_name: "English", iso_639_1: "en", name: "English" }
+  ],
+  production_countries: [
+    { iso_3166_1: "US", name: "United States of America" }
+  ],
+  belongs_to_collection: null
 };
 
 // ===========================================
@@ -163,7 +174,7 @@ describe("TMDB API Service", () => {
     });
 
     it("should handle empty results", async () => {
-      const emptyResponse = { ...mockMoviesResponse, results: [], total_results: 0 };
+      const emptyResponse: MoviesResponse = { ...mockMoviesResponse, results: [], total_results: 0 };
       mockedGetTopRatedMovies.mockResolvedValue(emptyResponse);
 
       const result = await getTopRatedMovies(999);
@@ -226,7 +237,7 @@ describe("TMDB API Service", () => {
     });
 
     it("should handle missing movie data", async () => {
-      mockedGetMovieById.mockResolvedValue(null as any);
+      mockedGetMovieById.mockResolvedValue(null as unknown as MovieDetails);
 
       const result = await getMovieById(123);
 
@@ -250,7 +261,7 @@ describe("TMDB API Service", () => {
     });
 
     it("should handle empty search query", async () => {
-      const emptyResponse = { ...mockSearchResponse, results: [], total_results: 0 };
+      const emptyResponse: MoviesResponse = { ...mockSearchResponse, results: [], total_results: 0 };
       mockedSearchMovies.mockResolvedValue(emptyResponse);
 
       const result = await searchMovies("", 1);
@@ -267,7 +278,7 @@ describe("TMDB API Service", () => {
     });
 
     it("should handle search with no results", async () => {
-      const noResultsResponse = { 
+      const noResultsResponse: MoviesResponse = { 
         page: 1, 
         results: [], 
         total_pages: 0, 
@@ -310,11 +321,18 @@ describe("TMDB API Service", () => {
     });
 
     it("should handle malformed responses", async () => {
-      mockedGetTopRatedMovies.mockResolvedValue({} as any);
+      // Create a properly typed empty response instead of using 'any'
+      const emptyResponse: MoviesResponse = {
+        page: 1,
+        results: [],
+        total_pages: 0,
+        total_results: 0
+      };
+      mockedGetTopRatedMovies.mockResolvedValue(emptyResponse);
 
       const result = await getTopRatedMovies(1);
 
-      expect(result).toEqual({});
+      expect(result).toEqual(emptyResponse);
     });
   });
 
@@ -324,7 +342,7 @@ describe("TMDB API Service", () => {
 
   describe("Input Validation & Performance", () => {
     it("should handle very large page numbers", async () => {
-      const largePageResponse = { ...mockMoviesResponse, page: 1000 };
+      const largePageResponse: MoviesResponse = { ...mockMoviesResponse, page: 1000 };
       mockedGetTopRatedMovies.mockResolvedValue(largePageResponse);
 
       const result = await getTopRatedMovies(1000);
@@ -340,7 +358,8 @@ describe("TMDB API Service", () => {
 
     it("should handle very long search queries", async () => {
       const longQuery = "a".repeat(1000);
-      mockedSearchMovies.mockResolvedValue({ ...mockSearchResponse, results: [] });
+      const emptyResponse: MoviesResponse = { ...mockSearchResponse, results: [] };
+      mockedSearchMovies.mockResolvedValue(emptyResponse);
 
       await searchMovies(longQuery, 1);
 
