@@ -18,19 +18,29 @@ export default function RootLayout({
 }>) {
 	return (
 		<ClerkProvider>
-			<html lang="en" suppressHydrationWarning >
+			<html lang="en" suppressHydrationWarning>
 				<body suppressHydrationWarning>
 					<Providers>
 						<PrimeReactProvider>
 							<Header />
 							<Navbar />
-							<main className="container mx-auto max-w-[90%] mt-[80px]"  >
-								
-															<SearchBox />
-
-								{children}</main>
-
-								<Footer />
+							<main
+								className="
+									container 
+									mx-auto 
+									px-4 
+									mt-[80px] 
+									max-w-screen-sm 
+									sm:max-w-screen-md 
+									md:max-w-screen-lg 
+									lg:max-w-screen-xl 
+									xl:max-w-[1400px]
+								"
+							>
+								<SearchBox />
+								{children}
+							</main>
+							<Footer />
 						</PrimeReactProvider>
 					</Providers>
 				</body>

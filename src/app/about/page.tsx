@@ -10,6 +10,7 @@ import {
 	Zap,
 	Globe,
 } from "lucide-react";
+import Link from "next/link";
 // Imports End
 
 const page = () => {
@@ -61,7 +62,7 @@ const page = () => {
 					</h1>
 					<p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
 						We&apos;re passionate about connecting movie lovers with their
-						perfect cinematic experiences. Since 2020, we&apos;ve been
+						perfect cinematic experiences. Since 2025, we&apos;ve been
 						revolutionizing how people discover and enjoy films.
 					</p>
 				</section>
@@ -202,10 +203,22 @@ const page = () => {
 						<div className="flex flex-col sm:flex-row gap-4 justify-center">
 							<button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex items-center justify-center space-x-2">
 								<Play className="w-5 h-5" />
-								<span>Start Discovering</span>
+								<Link
+									href="/"
+									rel="noopener noreferrer"
+									className="text-indigo-600 hover:underline hover:opacity-90 transition-opacity"
+								>
+									<span>Start Discovering</span>
+								</Link>
 							</button>
 							<button className="border-2 border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:border-purple-500 hover:bg-white/5 transition-all duration-200">
-								Learn More
+								<Link
+									href="https://devkoech.vercel.app/client"
+									rel="noopener noreferrer"
+									className="text-indigo-600 hover:underline hover:opacity-90 transition-opacity"
+								>
+									<span> Learn More</span>
+								</Link>
 							</button>
 						</div>
 					</div>

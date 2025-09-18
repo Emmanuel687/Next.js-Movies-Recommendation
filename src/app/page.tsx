@@ -36,7 +36,7 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	// State Variables End
 
-	// Fetch TopRated movies Start
+	// Fetch TopRated Movies from API Service Start
 	useEffect(() => {
 		const loadTrending = async () => {
 			setIsLoading(true);
@@ -57,7 +57,7 @@ const Home = () => {
 
 		loadTrending();
 	}, [currentPage]);
-	// Fetch TopRated movies End
+	// Fetch TopRated Movies from API Service End
 
 	// Handle Page Change Start
 	const handlePageChange = (page: number) => {
@@ -65,16 +65,25 @@ const Home = () => {
 		// Scroll to top when page changes
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
-  //  Handle Page Change End
+	//  Handle Page Change End
 
+	// Error Boundary Section Start
 	if (error)
 		return <div className="text-center py-10 text-red-500">{error}</div>;
+	// Error Boundary Section End
 
+	// Loader Component Section Start
 	if (isLoading) return <MovieLoader />;
+	// Loader Component Section End
 
 	return (
+		// Home Page Route Start
 		<div>
+			{/* Movie List Component Start*/}
 			<MovieList results={results} />
+			{/* Movie List Component End */}
+
+			{/* Paginator Start */}
 			<Paginator
 				currentPage={currentPage}
 				totalPages={totalPages}
@@ -84,7 +93,9 @@ const Home = () => {
 				showPageInfo={true}
 				showNavigation={true}
 			/>
+			{/* Paginator End */}
 		</div>
+		// Home Page Route End
 	);
 };
 
