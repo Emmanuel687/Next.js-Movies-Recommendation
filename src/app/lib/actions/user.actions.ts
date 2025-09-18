@@ -13,13 +13,41 @@ interface ClerkEmailAddress {
 }
 
 // Define the user type that matches your MongoDB schema
-// Use the IUser interface and add the Mongoose-specific fields
-interface DatabaseUser extends Omit<IUser, keyof Document> {
+interface DatabaseUser {
   _id: string;
+  clerkId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePicture: string;
+  favs: Array<{
+    movieId: string;
+    title: string;
+    description: string;
+    dateReleased: Date;
+    rating: number;
+    image: string;
+  }>;
   createdAt: Date;
   updatedAt: Date;
   __v?: number;
 }
+
+// Helper function to convert Mongoose document to DatabaseUser
+const convertToDatabaseUser = (user: any): DatabaseUser => {
+  return {
+    _id: user._id.toString(),
+    clerkId: user.clerkId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    profilePicture: user.profilePicture,
+    favs: user.favs,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    __v: user.__v
+  };
+};
 
 export const createOrUpdateUser = async (
   id: string,
@@ -50,18 +78,7 @@ export const createOrUpdateUser = async (
 
     // Convert to plain object and return with proper typing
     const userObject = userDoc.toObject();
-    return {
-      _id: userObject._id.toString(),
-      clerkId: userObject.clerkId,
-      firstName: userObject.firstName,
-      lastName: userObject.lastName,
-      email: userObject.email,
-      profilePicture: userObject.profilePicture,
-      favs: userObject.favs,
-      createdAt: userObject.createdAt,
-      updatedAt: userObject.updatedAt,
-      __v: userObject.__v
-    } as DatabaseUser;
+    return convertToDatabaseUser(userObject);
   } catch (error) {
     console.error("Error: Could not create/update user", error);
     throw new Error(
@@ -101,18 +118,7 @@ export const getUserByClerkId = async (
     if (!userDoc) return null;
     
     // Return with proper typing
-    return {
-      _id: userDoc._id.toString(),
-      clerkId: userDoc.clerkId,
-      firstName: userDoc.firstName,
-      lastName: userDoc.lastName,
-      email: userDoc.email,
-      profilePicture: userDoc.profilePicture,
-      favs: userDoc.favs,
-      createdAt: userDoc.createdAt,
-      updatedAt: userDoc.updatedAt,
-      __v: userDoc.__v
-    } as DatabaseUser;
+    return convertToDatabaseUser(userDoc);
   } catch (error) {
     console.error("Error fetching user by clerkId:", error);
     throw new Error(
@@ -142,18 +148,7 @@ export const updateUserFavorites = async (
 
     // Convert to plain object and return with proper typing
     const userObject = userDoc.toObject();
-    return {
-      _id: userObject._id.toString(),
-      clerkId: userObject.clerkId,
-      firstName: userObject.firstName,
-      lastName: userObject.lastName,
-      email: userObject.email,
-      profilePicture: userObject.profilePicture,
-      favs: userObject.favs,
-      createdAt: userObject.createdAt,
-      updatedAt: userObject.updatedAt,
-      __v: userObject.__v
-    } as DatabaseUser;
+    return convertToDatabaseUser(userObject);
   } catch (error) {
     console.error("Error updating user favorites:", error);
     throw new Error(
