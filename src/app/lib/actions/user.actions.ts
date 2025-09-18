@@ -1,5 +1,6 @@
 import User from "../models/user.models";
 import { connect } from "../mongodb/mongoose";
+import { IUser } from "../models/user.models"; // Import the interface from your model
 
 // Define types for email addresses from Clerk
 interface ClerkEmailAddress {
@@ -12,23 +13,12 @@ interface ClerkEmailAddress {
 }
 
 // Define the user type that matches your MongoDB schema
-interface DatabaseUser {
+// Use the IUser interface and add the Mongoose-specific fields
+interface DatabaseUser extends Omit<IUser, keyof Document> {
   _id: string;
-  clerkId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  profilePicture: string;
-  favs: Array<{
-    movieId: number;
-    title: string;
-    description: string;
-    dateReleased: Date;
-    rating: number;
-    image: string;
-  }>;
   createdAt: Date;
   updatedAt: Date;
+  __v?: number;
 }
 
 export const createOrUpdateUser = async (
@@ -58,7 +48,20 @@ export const createOrUpdateUser = async (
       throw new Error("User not found or created");
     }
 
-    return userDoc.toObject() as DatabaseUser;
+    // Convert to plain object and return with proper typing
+    const userObject = userDoc.toObject();
+    return {
+      _id: userObject._id.toString(),
+      clerkId: userObject.clerkId,
+      firstName: userObject.firstName,
+      lastName: userObject.lastName,
+      email: userObject.email,
+      profilePicture: userObject.profilePicture,
+      favs: userObject.favs,
+      createdAt: userObject.createdAt,
+      updatedAt: userObject.updatedAt,
+      __v: userObject.__v
+    } as DatabaseUser;
   } catch (error) {
     console.error("Error: Could not create/update user", error);
     throw new Error(
@@ -93,8 +96,23 @@ export const getUserByClerkId = async (
 ): Promise<DatabaseUser | null> => {
   try {
     await connect();
-    const userDoc = await User.findOne({ clerkId }).lean<DatabaseUser>();
-    return userDoc ?? null;
+    const userDoc = await User.findOne({ clerkId }).lean();
+    
+    if (!userDoc) return null;
+    
+    // Return with proper typing
+    return {
+      _id: userDoc._id.toString(),
+      clerkId: userDoc.clerkId,
+      firstName: userDoc.firstName,
+      lastName: userDoc.lastName,
+      email: userDoc.email,
+      profilePicture: userDoc.profilePicture,
+      favs: userDoc.favs,
+      createdAt: userDoc.createdAt,
+      updatedAt: userDoc.updatedAt,
+      __v: userDoc.__v
+    } as DatabaseUser;
   } catch (error) {
     console.error("Error fetching user by clerkId:", error);
     throw new Error(
@@ -122,7 +140,20 @@ export const updateUserFavorites = async (
       throw new Error("User not found");
     }
 
-    return userDoc.toObject() as DatabaseUser;
+    // Convert to plain object and return with proper typing
+    const userObject = userDoc.toObject();
+    return {
+      _id: userObject._id.toString(),
+      clerkId: userObject.clerkId,
+      firstName: userObject.firstName,
+      lastName: userObject.lastName,
+      email: userObject.email,
+      profilePicture: userObject.profilePicture,
+      favs: userObject.favs,
+      createdAt: userObject.createdAt,
+      updatedAt: userObject.updatedAt,
+      __v: userObject.__v
+    } as DatabaseUser;
   } catch (error) {
     console.error("Error updating user favorites:", error);
     throw new Error(
@@ -130,5 +161,5 @@ export const updateUserFavorites = async (
         error instanceof Error ? error.message : "Unknown error"
       }`
     );
-  }
+  };
 };
