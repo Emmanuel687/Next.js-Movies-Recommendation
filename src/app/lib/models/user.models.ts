@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface IFav {
   movieId: string;
@@ -10,12 +10,15 @@ export interface IFav {
 }
 
 export interface IUser extends Document {
+  _id: Types.ObjectId; // ✅ Explicitly typed
   clerkId: string;
   email: string;
   firstName: string;
   lastName: string;
   profilePicture: string;
   favs: IFav[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const favSchema = new Schema<IFav>({
