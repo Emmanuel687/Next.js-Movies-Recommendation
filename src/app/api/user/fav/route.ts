@@ -1,8 +1,51 @@
 import User from '../../../lib/models/user.models';
 import { connect } from '../../../lib/mongodb/mongoose';
-import { currentUser, createClerkClient } from '@clerk/nextjs/server';
+import { currentUser, createClerkClient, type User as ClerkUser } from '@clerk/nextjs/server';
 
-// ✅ PUT = Add or remove a favorite
+// Helper function to ensure user exists in MongoDB
+const ensureUserExists = async (clerkUser: ClerkUser) => {
+  await connect();
+
+  // If user already has userMongoId, return it
+  if (clerkUser.publicMetadata.userMongoId) {
+    const existingUser = await User.findById(clerkUser.publicMetadata.userMongoId);
+    if (existingUser) {
+      return clerkUser.publicMetadata.userMongoId;
+    }
+  }
+
+  // Check if user exists by Clerk ID
+  let dbUser = await User.findOne({ clerkId: clerkUser.id });
+
+  if (!dbUser) {
+    // Create new user with all required fields
+    dbUser = new User({
+      clerkId: clerkUser.id,
+      email: clerkUser.emailAddresses[0]?.emailAddress || 'noemail@example.com',
+      firstName: clerkUser.firstName || 'User',
+      lastName: clerkUser.lastName || 'Lastname', // ✅ Non-empty fallback
+      profilePicture: clerkUser.imageUrl || '',
+      favs: []
+    });
+
+
+    await dbUser.save();
+    console.log('Created new user:', dbUser._id);
+  }
+
+  // Update Clerk metadata with userMongoId
+  const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+  await clerk.users.updateUserMetadata(clerkUser.id, {
+    publicMetadata: {
+      ...clerkUser.publicMetadata,
+      userMongoId: dbUser._id.toString(),
+    },
+  });
+
+  return dbUser._id.toString();
+};
+
+// PUT = Add or remove a favorite
 export const PUT = async (req: Request) => {
   try {
     const user = await currentUser();
@@ -13,14 +56,8 @@ export const PUT = async (req: Request) => {
       });
     }
 
-    if (!user.publicMetadata.userMongoId) {
-      return new Response(JSON.stringify({ error: 'User MongoDB ID not found in metadata' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    await connect();
+    // Ensure user exists in MongoDB and has userMongoId
+    const userMongoId = await ensureUserExists(user);
 
     let data;
     try {
@@ -39,10 +76,9 @@ export const PUT = async (req: Request) => {
       });
     }
 
-    // ✅ Normalize to string
     const movieId = String(data.movieId);
 
-    const existingUser = await User.findById(user.publicMetadata.userMongoId);
+    const existingUser = await User.findById(userMongoId);
     if (!existingUser) {
       return new Response(JSON.stringify({ error: 'User not found in database' }), {
         status: 404,
@@ -54,14 +90,14 @@ export const PUT = async (req: Request) => {
     const isAlreadyFavorite = existingUser.favs.some((fav) => fav.movieId === movieId);
 
     if (isAlreadyFavorite) {
-      // ✅ Remove
+      // Remove
       updatedUser = await User.findByIdAndUpdate(
-        user.publicMetadata.userMongoId,
+        userMongoId,
         { $pull: { favs: { movieId } } },
         { new: true, runValidators: true }
       );
     } else {
-      // ✅ Add
+      // Add
       if (!data.title) {
         return new Response(JSON.stringify({ error: 'title is required when adding to favorites' }), {
           status: 400,
@@ -70,7 +106,7 @@ export const PUT = async (req: Request) => {
       }
 
       updatedUser = await User.findByIdAndUpdate(
-        user.publicMetadata.userMongoId,
+        userMongoId,
         {
           $addToSet: {
             favs: {
@@ -91,7 +127,7 @@ export const PUT = async (req: Request) => {
       throw new Error('User update failed');
     }
 
-    // ✅ Sync Clerk metadata
+    // Sync Clerk metadata
     try {
       const updatedFavs = updatedUser.favs.map((fav) => fav.movieId);
       const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
@@ -99,6 +135,7 @@ export const PUT = async (req: Request) => {
       await clerk.users.updateUserMetadata(user.id, {
         publicMetadata: {
           ...user.publicMetadata,
+          userMongoId: userMongoId,
           favs: updatedFavs,
         },
       });
@@ -126,7 +163,7 @@ export const PUT = async (req: Request) => {
   }
 };
 
-// ✅ GET = Retrieve all favorites
+// GET = Retrieve all favorites
 export const GET = async () => {
   try {
     const user = await currentUser();
@@ -137,15 +174,10 @@ export const GET = async () => {
       });
     }
 
-    if (!user.publicMetadata.userMongoId) {
-      return new Response(JSON.stringify({ error: 'User MongoDB ID not found' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    // Ensure user exists in MongoDB and has userMongoId
+    const userMongoId = await ensureUserExists(user);
 
-    await connect();
-    const dbUser = await User.findById(user.publicMetadata.userMongoId);
+    const dbUser = await User.findById(userMongoId);
 
     if (!dbUser) {
       return new Response(JSON.stringify({ error: 'User not found' }), {

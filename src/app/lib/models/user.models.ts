@@ -24,11 +24,12 @@ export interface IUser extends Document {
 const favSchema = new Schema<IFav>({
   movieId: { type: String, required: true },
   title: { type: String, required: true },
-  description: { type: String, required: true },
-  dateReleased: { type: Date, required: true },
-  rating: { type: Number, required: true },
-  image: { type: String, required: true },
+  description: { type: String, required: false },     // changed
+  dateReleased: { type: Date, required: false },      // changed
+  rating: { type: Number, required: false },          // changed
+  image: { type: String, required: false },           // changed
 });
+
 
 const userSchema = new Schema<IUser>(
   {
