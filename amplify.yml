@@ -1,17 +1,23 @@
+
 version: 1
 frontend:
   phases:
     preBuild:
       commands:
+        # Ensure Node 20 is used
         - nvm install 20
         - nvm use 20
+        # Install dependencies
         - npm ci
     build:
       commands:
+        # Run lint and tests
         - npm run lint
         - npm run test
+        # Build the Next.js app
         - npm run build
   artifacts:
+    # Directory containing the built Next.js app
     baseDirectory: .next
     files:
       - '**/*'
