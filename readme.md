@@ -133,11 +133,23 @@ If checks pass, the app is automatically deployed to Vercel.
 
 📦 Deployment
 
-The project is deployed on Vercel:
+The project is deployed on Vercel && AWS:
 
 Automatic CI/CD pipeline runs linting and unit tests on every push or pull request to main.
 
 Once checks pass, the project is deployed to production.
+
+🚀 CD (Continuous Deployment):
+
+If all checks pass, the app is automatically deployed to Vercel.
+
+Vercel handles the production deployment based on the latest main branch.
+
+🌐 Live Deployments
+
+Vercel (Production): https://cinescope-md.vercel.app/
+
+AWS Amplify (Alternate Hosting): https://main.dy5bt2m6cp7h7.amplifyapp.com/
 
 🔧 Configuration
 Clerk Setup
