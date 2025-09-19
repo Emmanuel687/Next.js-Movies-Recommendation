@@ -1,4 +1,3 @@
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -18,10 +17,21 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    appDir: true, // Enable the new app directory if you are using /app
+  
+  // Remove this line for Next.js 15:
+  // experimental: { appDir: true },
+
+  trailingSlash: true,
+
+  env: {
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
+    NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+    CLERK_WEBHOOK_SIGNING_SECRET: process.env.CLERK_WEBHOOK_SIGNING_SECRET,
+    MONGODB_URI: process.env.MONGODB_URI,
+    NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY,
   },
-  output: 'standalone', // Makes the build compatible with serverless deployments like Amplify
 }
 
 module.exports = nextConfig;
