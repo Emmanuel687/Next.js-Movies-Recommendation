@@ -1,6 +1,7 @@
 // next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -17,6 +18,10 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    appDir: true, // Enable the new app directory if you are using /app
+  },
+  output: 'standalone', // Makes the build compatible with serverless deployments like Amplify
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;
