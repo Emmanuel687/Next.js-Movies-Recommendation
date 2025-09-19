@@ -54,14 +54,18 @@ const AddToFav: React.FC<AddToFavProps> = ({
 	// Normal Variables End
 
 	// CheckFavorite Status Start
+
+	// CheckFavorite Status End
+
+	// CheckFavorite Status Start
 	const checkFavoriteStatus = useCallback(async () => {
-		if (!isSignedIn) {
+		if (!isSignedIn || !user) {
 			setIsFavorite(false);
 			return;
 		}
 
 		try {
-			// Clerk metadata
+			// First check Clerk metadata
 			const favs = Array.isArray(user?.publicMetadata?.favs)
 				? (user.publicMetadata.favs as (string | number)[]).map(String)
 				: [];
@@ -69,32 +73,58 @@ const AddToFav: React.FC<AddToFavProps> = ({
 
 			setIsFavorite(isInMetadata);
 
-			// DB check
-			const res = await fetch("/api/user/fav");
-			if (res.ok) {
-				const data = await res.json();
-				const isInDB =
-					data.favs?.some(
-						(fav: Favorite) => String(fav.movieId) === movieIdStr
-					) || false;
+			// Then check database - but only if user has userMongoId
+			if (user.publicMetadata?.userMongoId) {
+				const res = await fetch("/api/user/fav", {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				});
 
-				if (isInMetadata !== isInDB) {
-					setIsFavorite(isInDB);
+				if (res.ok) {
+					const data = await res.json();
+					const isInDB =
+						data.favs?.some(
+							(fav: Favorite) => String(fav.movieId) === movieIdStr
+						) || false;
+
+					// Use DB as source of truth if there's a mismatch
+					if (isInMetadata !== isInDB) {
+						setIsFavorite(isInDB);
+					}
+				} else if (res.status === 400) {
+					// If 400 error, user might not have userMongoId set up
+					console.warn("User MongoDB ID not found. Using Clerk metadata only.");
+					// Stick with Clerk metadata result
+				} else {
+					console.error(
+						"API error:",
+						res.status,
+						await res.text().catch(() => "Unknown error")
+					);
 				}
+			} else {
+				console.warn(
+					"User does not have userMongoId in metadata. Using Clerk metadata only."
+				);
+				// Use Clerk metadata as fallback
 			}
 		} catch (err) {
 			console.error("Error checking favorite status:", err);
+			// Fall back to Clerk metadata if API fails
+			const favs = Array.isArray(user?.publicMetadata?.favs)
+				? (user.publicMetadata.favs as (string | number)[]).map(String)
+				: [];
+			setIsFavorite(favs.includes(movieIdStr));
 		}
 	}, [isSignedIn, user, movieIdStr]);
-	// CheckFavorite Status End
 
-	// Check Favorite Status Start
 	useEffect(() => {
-		if (!isLoaded) return;
-		setIsLoading(true);
-		checkFavoriteStatus().finally(() => setIsLoading(false));
-	}, [checkFavoriteStatus, isLoaded]);
-	// Check Favorite Status End
+	checkFavoriteStatus();
+}, [checkFavoriteStatus]);
+
+	// CheckFavorite Status End
 
 	//  HandleFavClick Method Start
 	const handleFavClick = async () => {
@@ -149,15 +179,14 @@ const AddToFav: React.FC<AddToFavProps> = ({
 	};
 	//  HandleFavClick Method End
 
-  // Set-Timeout/Clear Timeout Start
+	// Set-Timeout/Clear Timeout Start
 	useEffect(() => {
 		if (error) {
 			const timer = setTimeout(() => setError(null), 5000);
 			return () => clearTimeout(timer);
 		}
 	}, [error]);
-    // Set-Timeout/Clear Timeout End
-
+	// Set-Timeout/Clear Timeout End
 
 	// Get Button Class Start
 	const getButtonClass = () => {

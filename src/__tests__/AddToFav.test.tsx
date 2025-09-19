@@ -1,10 +1,11 @@
 /**
- * AddToFav Component Unit Tests (Passing Only)
+ * AddToFav Component Unit Tests (Updated)
  *
  * This test suite validates the AddToFav component by checking:
  * - Rendering for signed-in and signed-out users
  * - Loading state when Clerk is not loaded
  * - Redirects to /sign-in when unauthenticated
+ * - Fetch behavior with and without userMongoId
  */
 
 import AddToFav from "../app/components/favorite/AddToFav";
@@ -31,7 +32,19 @@ describe("AddToFav Component", () => {
   const mockPush = vi.fn();
   const mockReload = vi.fn();
 
-  const mockUser = {
+  const mockUserWithMongoId = {
+    isSignedIn: true,
+    user: {
+      publicMetadata: { 
+        favs: [],
+        userMongoId: "mock-mongo-id-123"
+      },
+      reload: mockReload,
+    },
+    isLoaded: true,
+  };
+
+  const mockUserWithoutMongoId = {
     isSignedIn: true,
     user: {
       publicMetadata: { favs: [] },
@@ -43,7 +56,7 @@ describe("AddToFav Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
-    (useUser as jest.Mock).mockReturnValue(mockUser);
+    (useUser as jest.Mock).mockReturnValue(mockUserWithMongoId);
     
     // Mock fetch to resolve successfully
     (global.fetch as jest.Mock).mockResolvedValue({
@@ -119,16 +132,48 @@ describe("AddToFav Component", () => {
     expect(mockPush).toHaveBeenCalledWith("/sign-in");
   });
 
-  // ✅ Test 5: Verify fetch is called with correct URL
-  it("calls fetch with correct URL", async () => {
+  // ✅ Test 5: Calls fetch when user has userMongoId
+  it("calls fetch with correct URL when user has userMongoId", async () => {
+    // Mock console.warn to avoid warning output in tests
+    const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    
     render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
     
+    // First wait for the component to render completely
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith("/api/user/fav");
+      expect(screen.getByRole("button")).toBeInTheDocument();
     });
+    
+    // Then wait for the fetch to be called
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    }, { timeout: 3000 });
+    
+    // Verify the exact call
+    expect(global.fetch).toHaveBeenCalledWith("/api/user/fav", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    
+    // Restore console.warn
+    consoleWarnSpy.mockRestore();
   });
 
-  // ✅ Test 6: Handles fetch errors gracefully
+  // ✅ Test 6: Does not call fetch when user lacks userMongoId
+  it("does not call fetch when user lacks userMongoId", async () => {
+    (useUser as jest.Mock).mockReturnValue(mockUserWithoutMongoId);
+    
+    render(<AddToFav movieId={123} title="Test Movie" showLabel={true} />);
+    
+    // Wait a bit to ensure useEffect has run
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  // ✅ Test 7: Handles fetch errors gracefully
   it("handles fetch errors gracefully", async () => {
     // Mock fetch to reject
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error("API error"));
