@@ -1,9 +1,9 @@
 import User from '../../../lib/models/user.models';
 import { connect } from '../../../lib/mongodb/mongoose';
-import { currentUser, createClerkClient } from '@clerk/nextjs/server';
+import { currentUser, createClerkClient, type User as ClerkUser } from '@clerk/nextjs/server';
 
 // Helper function to ensure user exists in MongoDB
-const ensureUserExists = async (clerkUser) => {
+const ensureUserExists = async (clerkUser: ClerkUser) => {
   await connect();
 
   // If user already has userMongoId, return it
